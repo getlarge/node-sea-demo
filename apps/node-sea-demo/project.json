@@ -13,10 +13,10 @@
         "platform": "node",
         "outputPath": "dist/apps/node-sea-demo",
         "format": ["cjs"],
-        "bundle": false,
+        "bundle": true,
         "main": "apps/node-sea-demo/src/main.ts",
         "tsConfig": "apps/node-sea-demo/tsconfig.app.json",
-        "assets": ["apps/node-sea-demo/src/assets"],
+        "assets": ["apps/node-sea-demo/src/assets/**/*"],
         "generatePackageJson": true,
         "esbuildOptions": {
           "sourcemap": true,

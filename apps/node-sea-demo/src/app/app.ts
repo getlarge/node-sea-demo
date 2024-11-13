@@ -1,27 +1,26 @@
-import * as path from 'path';
 import { FastifyInstance } from 'fastify';
-import AutoLoad from '@fastify/autoload';
+import fastifyMultipart from '@fastify/multipart';
+import sensible from '@fastify/sensible';
+import fastifyStatic from '@fastify/static';
+import { getAssetsDir } from './helpers';
+import routes from './routes/root';
 
-/* eslint-disable-next-line */
-export interface AppOptions {}
+export interface AppOptions {
+  fileSize?: number;
+}
 
 export async function app(fastify: FastifyInstance, opts: AppOptions) {
-  // Place here your custom code!
-
-  // Do not touch the following lines
-
-  // This loads all plugins defined in plugins
-  // those should be support plugins that are reused
-  // through your application
-  fastify.register(AutoLoad, {
-    dir: path.join(__dirname, 'plugins'),
-    options: { ...opts },
+  await fastify.register(sensible);
+  await fastify.register(fastifyMultipart, {
+    limits: {
+      fileSize: opts.fileSize ?? 1048576 * 10, // 10MB
+    },
+  });
+  const assetsDir = await getAssetsDir();
+  await fastify.register(fastifyStatic, {
+    root: assetsDir,
+    prefix: '/assets/', // optional: default '/'
   });
 
-  // This loads all plugins defined in routes
-  // define your routes in one of these
-  fastify.register(AutoLoad, {
-    dir: path.join(__dirname, 'routes'),
-    options: { ...opts },
-  });
+  await fastify.register(routes);
 }
