@@ -35,6 +35,14 @@
         "targetName": "test"
       },
       "exclude": ["apps/node-sea-demo-e2e/**/*"]
+    },
+    {
+      "plugin": "@getlarge/nx-node-sea",
+      "include": ["apps/**/*"],
+      "options": {
+        "seaTargetName": "sea-build",
+        "buildTarget": "build"
+      }
     }
   ]
 }

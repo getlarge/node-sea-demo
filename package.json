@@ -15,6 +15,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.8.0",
+    "@getlarge/nx-node-sea": "0.0.1",
     "@nx/esbuild": "20.1.0",
     "@nx/eslint": "20.1.0",
     "@nx/eslint-plugin": "20.1.0",

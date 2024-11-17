@@ -14,6 +14,7 @@
         "outputPath": "dist/apps/node-sea-demo",
         "format": ["cjs"],
         "bundle": true,
+        "thirdParty": true,
         "main": "apps/node-sea-demo/src/main.ts",
         "tsConfig": "apps/node-sea-demo/tsconfig.app.json",
         "assets": ["apps/node-sea-demo/src/assets/**/*"],
@@ -36,6 +37,26 @@
             }
           }
         }
+      }
+    },
+    "build-binary-poc": {
+      "dependsOn": ["build"],
+      "inputs": ["production", "{projectRoot}/sea-config.json"],
+      "outputs": [
+        "{workspaceRoot}/dist/{projectRoot}/cat-fostering.blob",
+        "{workspaceRoot}/dist/{projectRoot}/node"
+      ],
+      "cache": true,
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "node --experimental-sea-config {projectRoot}/sea-config.json",
+          "cp $(command -v node) dist/{projectRoot}/node",
+          "codesign --remove-signature dist/{projectRoot}/node",
+          "npx postject dist/{projectRoot}/node NODE_SEA_BLOB dist/{projectRoot}/cat-fostering.blob --sentinel-fuse NODE_SEA_FUSE_fce680ab2cc467b6e072b8b5df1996b2 --macho-segment-name NODE_SEA",
+          "codesign --sign - dist/{projectRoot}/node"
+        ],
+        "parallel": false
       }
     },
     "serve": {
