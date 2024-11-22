@@ -43,7 +43,7 @@
       "dependsOn": ["build"],
       "inputs": ["production", "{projectRoot}/sea-config.json"],
       "outputs": [
-        "{workspaceRoot}/dist/{projectRoot}/cat-fostering.blob",
+        "{workspaceRoot}/dist/{projectRoot}/node-sea-demo.blob",
         "{workspaceRoot}/dist/{projectRoot}/node"
       ],
       "cache": true,
@@ -53,7 +53,7 @@
           "node --experimental-sea-config {projectRoot}/sea-config.json",
           "cp $(command -v node) dist/{projectRoot}/node",
           "codesign --remove-signature dist/{projectRoot}/node",
-          "npx postject dist/{projectRoot}/node NODE_SEA_BLOB dist/{projectRoot}/cat-fostering.blob --sentinel-fuse NODE_SEA_FUSE_fce680ab2cc467b6e072b8b5df1996b2 --macho-segment-name NODE_SEA",
+          "npx postject dist/{projectRoot}/node NODE_SEA_BLOB dist/{projectRoot}/demo.blob --sentinel-fuse NODE_SEA_FUSE_fce680ab2cc467b6e072b8b5df1996b2 --macho-segment-name NODE_SEA",
           "codesign --sign - dist/{projectRoot}/node"
         ],
         "parallel": false
@@ -78,7 +78,11 @@
     },
     "docker-build": {
       "dependsOn": ["build"],
-      "command": "docker build -f apps/node-sea-demo/Dockerfile . -t node-sea-demo"
+      "command": "docker build -f apps/node-sea-demo/Dockerfile . -t node-sea-demo:regular"
+    },
+    "docker-sea-build": {
+      "dependsOn": ["build"],
+      "command": "docker build -f apps/node-sea-demo/Dockerfile.sea . -t node-sea-demo:sea --no-cache"
     }
   }
 }

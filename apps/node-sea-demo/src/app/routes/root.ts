@@ -6,6 +6,8 @@ import { pipeline } from 'node:stream/promises';
 import { createWriteStream } from 'node:fs';
 
 export default async function (fastify: FastifyInstance) {
+  const dataDir = await getAssetsDir();
+
   // Utility to safely resolve paths and prevent directory traversal
   const safePathResolve = (
     userPath: string,
@@ -41,9 +43,7 @@ export default async function (fastify: FastifyInstance) {
         return;
       }
 
-      const dataDir = await getAssetsDir();
       const filePath = safePathResolve(data.filename, dataDir);
-
       if (!filePath) {
         reply.status(400).send({ error: 'Invalid file path' });
         return;

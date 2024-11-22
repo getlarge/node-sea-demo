@@ -1,0 +1,50 @@
+# Build stage using node:lts-alpine
+FROM node:lts-alpine AS build
+
+WORKDIR /app
+COPY dist/apps/node-sea-demo ./dist/apps/node-sea-demo
+COPY apps/node-sea-demo/sea-config.json ./
+
+# Install build dependencies
+RUN apk add --no-cache build-base python3
+
+# Create the SEA bundle and optimize the binary
+RUN node --experimental-sea-config ./sea-config.json && \
+  cp $(command -v node) dist/apps/node-sea-demo/node && \
+  npx postject dist/apps/node-sea-demo/node NODE_SEA_BLOB dist/apps/node-sea-demo/demo.blob --sentinel-fuse NODE_SEA_FUSE_fce680ab2cc467b6e072b8b5df1996b2 && \
+  chmod +x dist/apps/node-sea-demo/node && \
+  # Strip the binary to remove debug symbols
+  strip dist/apps/node-sea-demo/node
+
+# Install glibc for proper library copying
+RUN wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub && \
+  wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.35-r1/glibc-2.35-r1.apk && \
+  apk add --no-cache glibc-2.35-r1.apk && \
+  rm glibc-2.35-r1.apk
+
+# Create directory structure for dependencies
+RUN mkdir -p /app/deps && \
+  # Copy all required shared libraries
+  ldd dist/apps/node-sea-demo/node | grep "=> /" | awk '{print $3}' | \
+  xargs -I '{}' cp -L '{}' /app/deps/ && \
+  # Copy additional required files
+  cp /lib/ld-linux-*.so.* /app/deps/ && \
+  # Create necessary symlinks
+  mkdir -p /app/deps/lib64 && \
+  cp /lib/ld-linux-*.so.* /app/deps/lib64/
+
+# Final stage
+FROM scratch
+
+# Copy the dependencies
+COPY --from=build /app/deps /lib/
+# Ensure lib64 exists and has the loader
+COPY --from=build /app/deps/lib64 /lib64/
+
+# Copy the Node.js SEA executable
+COPY --from=build /app/dist/apps/node-sea-demo/node /app/node
+
+ENV HOST=0.0.0.0
+ENV PORT=3000
+
+CMD ["/app/node"]
