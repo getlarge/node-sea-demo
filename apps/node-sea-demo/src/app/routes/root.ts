@@ -1,9 +1,10 @@
 import { FastifyInstance } from 'fastify';
-import path from 'node:path';
-import fs from 'node:fs/promises';
-import { getAssetsDir } from '../helpers';
-import { pipeline } from 'node:stream/promises';
 import { createWriteStream } from 'node:fs';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import sea from 'node:sea';
+import { pipeline } from 'node:stream/promises';
+import { getAssetsDir } from '../helpers';
 
 export default async function (fastify: FastifyInstance) {
   const dataDir = await getAssetsDir();
@@ -83,7 +84,6 @@ export default async function (fastify: FastifyInstance) {
       reply.status(500).send({ error: 'Upload failed' });
     }
   });
-
   // List uploaded files
   fastify.get('/files', async (request, reply) => {
     try {
@@ -125,6 +125,25 @@ export default async function (fastify: FastifyInstance) {
       });
     } catch (error) {
       if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
+        reply.status(404).send({ error: 'File not found' });
+      } else {
+        fastify.log.error(error);
+        reply.status(500).send({ error: 'Internal server error' });
+      }
+    }
+  });
+
+  fastify.get('/sea-assets/:filename', async (request, reply) => {
+    if (!sea.isSea()) {
+      reply.status(500).send({ error: 'Not in SEA environment' });
+      return;
+    }
+    const { filename } = request.params as { filename: string };
+    try {
+      const assetBuffer = sea.getAsset(filename);
+      reply.send(Buffer.from(assetBuffer).toString());
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code === 'ERR_SINGLE_EXECUTABLE_APPLICATION_ASSET_NOT_FOUND') {
         reply.status(404).send({ error: 'File not found' });
       } else {
         fastify.log.error(error);
