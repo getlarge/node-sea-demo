@@ -1,82 +1,71 @@
 # NodeSeaDemo
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+![Cover](https://s3.amazonaws.com/media-p.slid.es/uploads/2597861/images/11768513/pasted-from-clipboard.png)
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is almost ready ✨.
+NodeSeaDemo is a practical demonstration of a [Single Executable Application](https://nodejs.org/api/single-executable-applications.html) (SEA) built with Node.js and Fastify. This project showcases how to handle file management during compilation, bundling, and runtime in a SEA context.
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/nx-api/node?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
+The application is compiled and bundled with ESBuild before the creation of the blob.
 
-## Finish your CI setup
+## Features
 
-[Click here to finish setting up your workspace!](https://cloud.nx.app/connect/AvB6CjSk1F)
+- **HTTP API**: A simple HTTP API built with Fastify.
+- **Static Assets**: Handles bundled static assets.
+- **File Uploads**: Supports dynamic file uploads.
+- **SEA Assets**: Manages SEA assets.
 
+## Project Structure
 
-## Run tasks
+- **apps/node-sea-demo**: Main application source code.
+- **apps/node-sea-demo-e2e**: End-to-end tests for the application.
+- **dist**: Compiled output directory.
+- **Dockerfile**: Docker configuration for running the application.
+- **Dockerfile.sea**: Docker configuration for building the SEA bundle.
 
-To run the dev server for your app, use:
+## Getting Started
+
+### Prerequisites
+
+- Node.js >= 20.12.0
+- Docker
+
+### Installation
+
+1. Clone the repository:
+
+   ```sh
+   git clone https://github.com/your-repo/node-sea-demo.git
+   cd node-sea-demo
+   ```
+
+2. Install dependencies:
+
+   ```sh
+   npm install
+
+   ```
+
+### Running the Application
+
+To run the application locally:
 
 ```sh
-npx nx serve node-sea-demo
+nx run node-sea-demo:serve
 ```
 
-To create a production bundle:
+To build and run the SEA:
 
 ```sh
-npx nx build node-sea-demo
+nx run node-sea-demo:sea-build
+./dist/apps/node-sea-demo-sea/node
 ```
 
-To see all available targets to run for a project, run:
+To build and run the Docker container:
 
 ```sh
-npx nx show project node-sea-demo
+nx run node-sea-demo:docker-sea-build
+docker run --rm -p 3000:3000 -t node-sea-demo:sea
 ```
 
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
+### Learn More
 
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Add new projects
-
-While you could add new projects to your workspace manually, you might want to leverage [Nx plugins](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) and their [code generation](https://nx.dev/features/generate-code?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) feature.
-
-Use the plugin's generator to create new projects.
-
-To generate a new application, use:
-
-```sh
-npx nx g @nx/node:app demo
-```
-
-To generate a new library, use:
-
-```sh
-npx nx g @nx/node:lib mylib
-```
-
-You can use `npx nx list` to get a list of installed plugins. Then, run `npx nx list <plugin-name>` to learn about more specific capabilities of a particular plugin. Alternatively, [install Nx Console](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) to browse plugins and generators in your IDE.
-
-[Learn more about Nx plugins &raquo;](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) | [Browse the plugin registry &raquo;](https://nx.dev/plugin-registry?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Install Nx Console
-
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
-
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Useful links
-
-Learn more:
-
-- [Learn more about this workspace setup](https://nx.dev/nx-api/node?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-And join the Nx community:
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+For more details, refer to the [presentation](https://slides.com/edouard_maleix/building-single-executable-applications-with-node-js).
