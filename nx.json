@@ -36,7 +36,7 @@
       "options": {
         "targetName": "test"
       },
-      "exclude": ["apps/node-sea-demo-e2e/**/*"]
+      "exclude": ["apps/node-sea-demo-e2e/**/*", "apps/node-sea-perf-e2e/**/*"]
     },
     {
       "plugin": "@getlarge/nx-node-sea",

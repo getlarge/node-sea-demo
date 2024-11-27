@@ -1,0 +1,17 @@
+{
+  "name": "node-sea-perf-e2e",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "implicitDependencies": ["node-sea-perf"],
+  "targets": {
+    "e2e": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{e2eProjectRoot}"],
+      "options": {
+        "jestConfig": "apps/node-sea-perf-e2e/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "dependsOn": ["node-sea-perf:build"]
+    }
+  }
+}
