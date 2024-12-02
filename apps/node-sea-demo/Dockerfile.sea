@@ -2,21 +2,9 @@
 FROM node:lts-alpine AS build
 
 WORKDIR /app
-COPY dist/apps/node-sea-demo ./dist/apps/node-sea-demo
-COPY apps/node-sea-demo/sea-config.json ./
 
-# Install build dependencies
 RUN apk add --no-cache build-base python3
 
-# Create the SEA bundle and optimize the binary
-RUN node --experimental-sea-config ./sea-config.json && \
-  cp $(command -v node) dist/apps/node-sea-demo/node && \
-  npx postject dist/apps/node-sea-demo/node NODE_SEA_BLOB dist/apps/node-sea-demo/demo.blob --sentinel-fuse NODE_SEA_FUSE_fce680ab2cc467b6e072b8b5df1996b2 && \
-  chmod +x dist/apps/node-sea-demo/node && \
-  # Strip the binary to remove debug symbols
-  strip dist/apps/node-sea-demo/node
-
-# Install glibc for proper library copying
 RUN wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub && \
   wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.35-r1/glibc-2.35-r1.apk && \
   apk add --no-cache glibc-2.35-r1.apk && \
@@ -33,6 +21,19 @@ RUN mkdir -p /app/deps && \
   mkdir -p /app/deps/lib64 && \
   cp /lib/ld-linux-*.so.* /app/deps/lib64/
 
+COPY dist/apps/node-sea-demo/main.js ./dist/apps/node-sea-demo/main.js
+COPY dist/apps/node-sea-demo/package.json ./dist/apps/node-sea-demo/package.json
+COPY dist/apps/node-sea-demo/src/assets ./dist/apps/node-sea-demo/src/assets
+COPY apps/node-sea-demo/sea-config.json ./
+
+# Create the SEA bundle and optimize the binary
+RUN node --experimental-sea-config ./sea-config.json && \
+  cp $(command -v node) dist/apps/node-sea-demo/node && \
+  npx postject dist/apps/node-sea-demo/node NODE_SEA_BLOB dist/apps/node-sea-demo/node-sea-demo.blob --sentinel-fuse NODE_SEA_FUSE_fce680ab2cc467b6e072b8b5df1996b2 && \
+  chmod +x dist/apps/node-sea-demo/node && \
+  # Strip the binary to remove debug symbols
+  strip dist/apps/node-sea-demo/node
+
 # Final stage
 FROM scratch
 
@@ -40,7 +41,6 @@ FROM scratch
 COPY --from=build /app/deps /lib/
 # Ensure lib64 exists and has the loader
 COPY --from=build /app/deps/lib64 /lib64/
-
 # Copy the Node.js SEA executable
 COPY --from=build /app/dist/apps/node-sea-demo/node /app/node
 

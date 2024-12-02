@@ -4,3 +4,5 @@ tmp
 .vscode
 .yarn
 .nx
+*.blob
+dist/**/node
