@@ -143,7 +143,10 @@ export default async function (fastify: FastifyInstance) {
       const assetBuffer = sea.getAsset(filename);
       reply.send(Buffer.from(assetBuffer).toString());
     } catch (error) {
-      if ((error as NodeJS.ErrnoException).code === 'ERR_SINGLE_EXECUTABLE_APPLICATION_ASSET_NOT_FOUND') {
+      if (
+        (error as NodeJS.ErrnoException).code ===
+        'ERR_SINGLE_EXECUTABLE_APPLICATION_ASSET_NOT_FOUND'
+      ) {
         reply.status(404).send({ error: 'File not found' });
       } else {
         fastify.log.error(error);
