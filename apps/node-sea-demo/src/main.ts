@@ -14,17 +14,22 @@ import { getAssetsDir } from './app/helpers';
 const host = process.env.HOST ?? '0.0.0.0';
 const port = process.env.PORT ? Number(process.env.PORT) : 3000;
 
-const server = Fastify({
-  logger: true,
-  trustProxy: true,
-});
-
 (async () => {
-  server.register(app);
+  const server = await Fastify({
+    logger: true,
+    trustProxy: true,
+  });
+
+  await server.register(app);
+
   try {
     await server.listen({ port, host });
+
     console.log(`[ ready ] http://${host}:${port}`);
     console.info(`Assets directory: ${await getAssetsDir()}`);
+    if (process.env.BENCHMARK === 'true') {
+      process.exit(0);
+    }
   } catch (err) {
     server.log.error(err);
     process.exit(1);
