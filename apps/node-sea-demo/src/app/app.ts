@@ -21,6 +21,5 @@ export async function app(fastify: FastifyInstance, opts: AppOptions) {
     root: assetsDir,
     prefix: '/assets/', // optional: default '/'
   });
-
   await fastify.register(routes);
 }

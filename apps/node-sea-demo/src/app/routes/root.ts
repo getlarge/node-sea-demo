@@ -52,17 +52,14 @@ export default async function (fastify: FastifyInstance) {
 
       await pipeline(data.file, createWriteStream(filePath));
 
-      // Update manifest
       const manifestPath = path.join(dataDir, 'manifest.json');
-      let manifest: { files: Array<{ name: string; timestamp: number }> } = {
-        files: [],
-      };
+      let manifest: { files: Array<{ name: string; timestamp: number }> };
 
       try {
         const manifestContent = await fs.readFile(manifestPath, 'utf-8');
         manifest = JSON.parse(manifestContent);
-      } catch (err) {
-        // Manifest doesn't exist yet, use default empty manifest
+      } catch (_err) {
+        manifest = { files: [] };
       }
 
       manifest.files.push({
@@ -84,10 +81,10 @@ export default async function (fastify: FastifyInstance) {
       reply.status(500).send({ error: 'Upload failed' });
     }
   });
+
   // List uploaded files
   fastify.get('/files', async (request, reply) => {
     try {
-      const dataDir = await getAssetsDir();
       const manifestPath = path.join(dataDir, 'manifest.json');
 
       try {
@@ -108,7 +105,6 @@ export default async function (fastify: FastifyInstance) {
     const { filename } = request.params as { filename: string };
 
     try {
-      const dataDir = await getAssetsDir();
       const filePath = safePathResolve(filename, dataDir);
 
       if (!filePath) {
