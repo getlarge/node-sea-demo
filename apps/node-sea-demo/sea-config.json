@@ -1,9 +1,9 @@
 {
   "main": "dist/apps/node-sea-demo/main.js",
-  "output": "dist/apps/node-sea-demo/demo.blob",
+  "output": "dist/apps/node-sea-demo/node-sea-demo.blob",
   "disableExperimentalSEAWarning": true,
   "useSnapshot": false,
-  "useCodeCache": true,
+  "useCodeCache": false,
   "assets": {
     "package.json": "dist/apps/node-sea-demo/package.json"
   }

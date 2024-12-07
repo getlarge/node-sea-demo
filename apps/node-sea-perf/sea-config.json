@@ -1,6 +1,6 @@
 {
   "main": "dist/apps/node-sea-perf/main.js",
-  "output": "dist/apps/node-sea-perf/sea-nosnap-cache.blob",
+  "output": "dist/apps/node-sea-perf/node-sea-perf.blob",
   "disableExperimentalSEAWarning": true,
   "useSnapshot": false,
   "useCodeCache": true

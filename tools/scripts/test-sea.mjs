@@ -23,25 +23,35 @@ const configurations = [
   { useSnapshot: false, useCodeCache: true },
 ];
 
-const runSeaTest = (app, config) => {
-  const appFolder = path.resolve(__dirname, path.join('..', '..', 'apps', app));
+const getAppFolder = (app) =>
+  path.resolve(__dirname, path.join('..', '..', 'apps', app));
 
+const getSeaConfig = (app) => {
+  const appFolder = getAppFolder(app);
+  return JSON.parse(
+    fs.readFileSync(path.join(appFolder, 'sea-config.json'), 'utf8')
+  );
+};
+
+const updateSeaConfig = (app, config) => {
+  const appFolder = getAppFolder(app);
+  fs.writeFileSync(
+    path.join(appFolder, 'sea-config.json'),
+    JSON.stringify(config, null, 2)
+  );
+};
+
+const runSeaTest = (app, config) => {
   const configName = `sea-${config.useSnapshot ? 'snap' : 'nosnap'}-${
     config.useCodeCache ? 'cache' : 'nocache'
   }`;
 
   console.log(`Building SEA with configuration: ${configName}`);
-  const configJson = JSON.parse(
-    fs.readFileSync(path.join(appFolder, 'sea-config.json'), 'utf8')
-  );
+  const configJson = getSeaConfig(app);
   configJson.useSnapshot = config.useSnapshot;
   configJson.useCodeCache = config.useCodeCache;
   configJson.output = `dist/apps/${app}/${configName}.blob`;
-
-  fs.writeFileSync(
-    path.join(appFolder, 'sea-config.json'),
-    JSON.stringify(configJson, null, 2)
-  );
+  updateSeaConfig(app, configJson);
 
   execSync(`npx nx run ${app}:sea-build`);
 
@@ -118,13 +128,20 @@ const runTest = (app, config) => {
 
 const main = () => {
   const { values } = parseArgs({ options });
+  const { app } = values;
   const results = [];
   for (const config of configurations) {
-    const result = runTest(values.app, config);
+    const result = runTest(app, config);
     results.push(result);
   }
 
   console.table(results);
+
+  const configJson = getSeaConfig(app);
+  configJson.useSnapshot = false;
+  configJson.useCodeCache = true;
+  configJson.output = `dist/apps/${app}/${app}.blob`;
+  updateSeaConfig(app, configJson);
 };
 
 main();
