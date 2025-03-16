@@ -78,11 +78,11 @@
     },
     "docker-build": {
       "dependsOn": ["build"],
-      "command": "docker build -f apps/node-sea-demo/Dockerfile . -t node-sea-demo:regular"
+      "command": "docker build -f apps/node-sea-demo/Dockerfile . -t getlarge/node-sea-demo:regular"
     },
     "docker-sea-build": {
       "dependsOn": ["build"],
-      "command": "docker build -f apps/node-sea-demo/Dockerfile.sea . -t node-sea-demo:sea --no-cache"
+      "command": "docker build -f apps/node-sea-demo/Dockerfile.sea . -t getlarge/node-sea-demo:sea --no-cache"
     }
   }
 }
