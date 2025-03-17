@@ -2,9 +2,11 @@
 
 ![Cover](./cover.jpg)
 
-NodeSeaDemo is a practical demonstration of a [Single Executable Application](https://nodejs.org/api/single-executable-applications.html) (SEA) built with Node.js and Fastify. This project showcases how to handle file management during compilation, bundling, and runtime in a SEA context.
+This repository/playground is a practical demonstration of a [Single Executable Application](https://nodejs.org/api/single-executable-applications.html) (SEA) built with Node.js and Fastify. This project showcases how to handle file management during compilation, bundling, and runtime in a SEA context.
 
 The application is compiled and bundled with ESBuild and use the [Node SEA Nx plugin](https://github.com/getlarge/nx-node-sea) to create the executable file.
+
+It is the companion repository for the arcticle [Building Single Executable Applications with Node.js](https://dev.to/this-is-learning/building-single-executable-applications-with-nodejs-16k3).
 
 ![Project configuration](./project-configuration.jpg)
 
